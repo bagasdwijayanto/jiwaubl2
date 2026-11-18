@@ -3,21 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use DB;
-use Redirect; //untuk redirect
-use Session;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
-use Validator;
 
 class MProdukController extends Controller
 {
+    /**
+     * v_inovasi tidak memiliki kolom jenis_bidang; view Blade menyesuaikan
+     * label Produk/Jasa dari kolom tersebut, jadi sediakan alias dari
+     * jenis_inovasi.
+     */
+    private function vInovasiQuery()
+    {
+        return DB::table('v_inovasi')->selectRaw(
+            "v_inovasi.*, CASE WHEN v_inovasi.jenis_inovasi = 'produk' THEN '0' ELSE '1' END AS jenis_bidang"
+        );
+    }
+
     //
     public function getIndex(Request $request) 
     {
 
-        $produk = DB::table('v_inovasi')->where('jenis_inovasi','produk')->get();
+        $produk = $this->vInovasiQuery()->where('jenis_inovasi','produk')->get();
 
         $data = [
             'title' => 'Daftar Data Master Inovasi (Produk)',
@@ -37,7 +49,7 @@ class MProdukController extends Controller
 
     public function getCreate() 
     {
-        $bidang = DB::table('bidang_tb')->where(array('statusbidang' => 'T', 'jenis_bidang' => '0'))->orderBy('idbidang', 'ASC')->get();
+        $bidang = DB::table('bidang_tb')->where('statusbidang', 'T')->orderBy('idbidang', 'ASC')->get();
 
         $data = [
             'title' => 'Buat Data Master Inovasi (Produk)',
@@ -110,7 +122,7 @@ class MProdukController extends Controller
 
     public function getShow($id) 
     {
-        $produk = DB::table('v_inovasi')->where('id_inovasi', base64_decode($id))->get();
+        $produk = $this->vInovasiQuery()->where('id_inovasi', base64_decode($id))->get();
 
         $data = [
             'title' => 'Detail Data Master Inovasi (Produk)',
@@ -130,8 +142,8 @@ class MProdukController extends Controller
 
     public function getEdit($id) 
     {
-        $produk = DB::table('v_inovasi')->where('id_inovasi', base64_decode($id))->get();
-        $bidang = DB::table('bidang_tb')->where(array('statusbidang' => 'T', 'jenis_bidang' => '0'))->orderBy('idbidang', 'ASC')->get();
+        $produk = $this->vInovasiQuery()->where('id_inovasi', base64_decode($id))->get();
+        $bidang = DB::table('bidang_tb')->where('statusbidang', 'T')->orderBy('idbidang', 'ASC')->get();
 
         $data = [
             'title' => 'Ubah Data Master Inovasi (Produk)',
@@ -255,7 +267,7 @@ class MProdukController extends Controller
 
     public function getRevision($id) 
     {
-        $produk = DB::table('v_inovasi')->where('id_inovasi', base64_decode($id))->get();
+        $produk = $this->vInovasiQuery()->where('id_inovasi', base64_decode($id))->get();
 
         $data = [
             'title' => 'Perbaikan Data Master Inovasi (Produk)',
@@ -297,7 +309,7 @@ class MProdukController extends Controller
 
     public function getRejected($id) 
     {
-        $produk = DB::table('v_inovasi')->where('id_inovasi', base64_decode($id))->get();
+        $produk = $this->vInovasiQuery()->where('id_inovasi', base64_decode($id))->get();
 
         $data = [
             'title' => 'Anulir Data Master Inovasi (Produk)',

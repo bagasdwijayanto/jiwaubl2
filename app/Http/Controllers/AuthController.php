@@ -2,17 +2,12 @@
 
 namespace App\Http\Controllers;
 
-
-use Illuminate\Support\Facades\Input; //untuk input::get
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
-
-use Redirect; //untuk redirect
-use DB;
-use Session;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
-
 
 class AuthController extends Controller
 {

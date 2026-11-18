@@ -25,8 +25,8 @@
     <link href="{{asset('public/template/front/css/style.css') }}" rel="stylesheet">
 
     <!--Favicon-->
-    <link rel="shortcut icon" href="{{asset('public/template/front/images/favicon.ico')}}" type="image/x-icon">
-    <link rel="icon" href="{{asset('public/template/front/images/favicon.ico')}}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('public/template/front/images/logo-ppik-ubl.png') }}" type="image/png">
+    <link rel="icon" href="{{ asset('public/template/front/images/logo-ppik-ubl.png') }}" type="image/png">
 
 </head>
 
@@ -37,7 +37,7 @@
     <section class="fixed-top navigation">
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-light">
-                <a class="navbar-brand" href="index.html"><img src="{{asset('public/template/front/images/logoPPIK.png')}}" alt="logo" width="100" height="100"></a>
+                <a class="navbar-brand" href="index.html"><img src="{{ asset('public/template/front/images/logo-ppik-ubl.png') }}" alt="Logo PPIK" width="120"></a>
                 <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -404,7 +404,7 @@
                 <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
                     <!-- logo -->
                     <a href="index.html">
-                        <img class="img-fluid" src="{{asset('public/template/front/images/logoPPIK.png') }}" alt="logo" width="100" height="100">
+                        <img class="img-fluid" src="{{ asset('public/template/front/images/logo-ppik-ubl.png') }}" alt="Logo PPIK" width="160">
 
                     </a>
                 </div>

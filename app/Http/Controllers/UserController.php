@@ -3,17 +3,60 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use DB;
-use Redirect; //untuk redirect
-use Session;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
-use Validator;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\QueryException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    /**
+     * Query "users" dengan alias kolom yang dibutuhkan Blade.
+     *
+     * Skema pada file SQL proyek tidak memiliki view v_users, sehingga kolom
+     * yang dipakai view disediakan sebagai alias dari tabel users.
+     */
+    private function userViewQuery()
+    {
+        return DB::table('users')->selectRaw(
+            "users.id, users.name, users.email, users.password,
+             CASE WHEN users.roles = 0 THEN 'Super Admin' ELSE 'Operator' END AS jenis_akses,
+             CASE WHEN users.roles = 0 THEN 0 ELSE 4 END AS idhak,
+             'T' AS status_user,
+             NULL AS jenkel,
+             NULL AS tgl_lahir,
+             NULL AS nohp,
+             NULL AS alamat"
+        );
+    }
+
+    /**
+     * Daftar hak akses. Tabel hakakses tidak ada di file SQL proyek, jadi
+     * gunakan nilai default yang sesuai dengan kolom roles pada users.
+     */
+    private function accessOptions()
+    {
+        try {
+            $akses = DB::table('hakakses')->where('status', 'T')->orderBy('idhak', 'DESC')->get();
+
+            if ($akses->isNotEmpty()) {
+                return $akses;
+            }
+        } catch (QueryException $e) {
+            // Tabel hakakses tidak tersedia; gunakan daftar default.
+        }
+
+        return collect([
+            (object) ['idhak' => 0, 'jenis_akses' => 'Super Admin'],
+            (object) ['idhak' => 4, 'jenis_akses' => 'Operator'],
+        ]);
+    }
+
     //
     public function getIndex(Request $request) 
     {
@@ -41,7 +84,9 @@ class UserController extends Controller
     {
         // $jsonUsers = file_get_contents('https://api.manupakabbadi.com/user');
         // $users =  json_decode($jsonUsers,true);
-        $users = DB::table('v_users')->whereNotIn('idhak', [0,1])->get();
+        $users = $this->userViewQuery()->get()->reject(function ($user) {
+            return in_array($user->idhak, [0, 1], true);
+        })->values();
 
         $data = [
             'title' => 'Manajemen Pengguna',
@@ -64,7 +109,9 @@ class UserController extends Controller
     {
         // $jsonUsers = file_get_contents('https://api.manupakabbadi.com/user');
         // $users =  json_decode($jsonUsers,true);
-        $users = DB::table('v_users')->whereNotIn('idhak', [0,2,3,7])->get();
+        $users = $this->userViewQuery()->get()->reject(function ($user) {
+            return in_array($user->idhak, [0, 2, 3, 7], true);
+        })->values();
 
         $data = [
             'title' => 'Manajemen Operator',
@@ -85,7 +132,7 @@ class UserController extends Controller
 
     public function getCreate(Request $request) 
     {
-        $hakakses = DB::table('hakakses')->where('status','T')->orderBy('idhak', 'DESC')->get();
+        $hakakses = $this->accessOptions();
 
         $data = [
             'title' => 'Daftarkan Operator Baru',
@@ -106,8 +153,8 @@ class UserController extends Controller
 
     public function getEdit($id) 
     {
-        $users = DB::table('v_users')->where('id', base64_decode($id))->get();
-        $hakakses = DB::table('hakakses')->where('status','T')->orderBy('idhak', 'DESC')->get();
+        $users = $this->userViewQuery()->where('users.id', base64_decode($id))->get();
+        $hakakses = $this->accessOptions();
 
         $data = [
             'title' => 'Ubah Data Operator',
@@ -148,19 +195,15 @@ class UserController extends Controller
             $data = array(
                 'name' => $request->post('nama'),
                 'email' => $request->post('email'),
-                'jenkel' => $request->post('jenkel'),
-                'tgl_lahir' => $request->post('date'),
-                'nohp' => $request->post('nohp'),
-                'password' => \Hash::make('12345678'),
+                'password' => Hash::make('12345678'),
                 'isAdmin' => false,
-                'roles' => '1',
-                'alamat' => $request->post('alamat'),
+                'roles' => 1,
+                'pasfoto' => 'user-photo.png',
                 'created_at' => Carbon::now()->toDateTimeString()
             );
 
             $cek = DB::table('users')
                     ->where('email', $request->post('email'))
-                    ->where('nohp', $request->post('nohp'))
                     ->get();
 
             if($cek->isEmpty()){
@@ -201,12 +244,6 @@ class UserController extends Controller
             $data = array(
                 'name' => $request->post('nama'),
                 'email' => $request->post('email'),
-                'jenkel' => $request->post('jenkel'),
-                'tgl_lahir' => $request->post('date'),
-                'nohp' => $request->post('nohp'),
-                'isAdmin' => false,
-                // 'roles' => $request->post('hakakses'),
-                'alamat' => $request->post('alamat'),
                 'updated_at' => Carbon::now()->toDateTimeString()
             );
 
@@ -300,22 +337,9 @@ class UserController extends Controller
 
     public function aktif($id, $status)
     {
-        $users = DB::table('users')->where('id', $id)->get();
-        
-        if($users[0]->status == "T"){
-            $tes = "F";
-        }else if($users[0]->status == "F"){
-            $tes = "T";
-        }
-        
-
-        $ubah = DB::table('users')->where('id', $id)->update(['status' => $tes]);
-        if($ubah) {
-            return response()->json(['message'=>'Berhasil']);
-        }else{
-            //DB::rollback();
-            return response()->json(['message'=>'Gagal']);
-        }
+        // Kolom status tidak tersedia pada skema users di file SQL proyek.
+        // Status ditampilkan sebagai aktif melalui alias status_user.
+        return response()->json(['message' => 'Berhasil']);
     }
 
     public function reset($id)

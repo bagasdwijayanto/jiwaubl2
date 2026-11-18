@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="{{asset('public/template/back/compiled/css/app.css')}}">
     <link rel="stylesheet" href="{{asset('public/template/back/compiled/css/app-dark.css') }}">
     <link rel="stylesheet" href="{{asset('public/template/back/compiled/css/iconly.scss') }}">
-    <link rel="shortcut icon" href="{{asset('public/template/back/compiled/svg/favicon.svg') }}" type="image/x-icon">
-    <link rel="shortcut icon" href="{{asset('public/template/back/compiled/svg/favicon.png') }}" type="image/png">
+    <link rel="shortcut icon" href="{{ asset('public/template/front/images/logo-ppik-ubl.png') }}" type="image/png">
+    <link rel="icon" href="{{ asset('public/template/front/images/logo-ppik-ubl.png') }}" type="image/png">
     <link rel="stylesheet" href="{{asset('public/template/back/extensions/simple-datatables/style.css') }}"/>
     <link rel="stylesheet" href="{{asset('public/template/back/compiled/css/table-datatable.css') }}" />
     <link rel="stylesheet" href="{{asset('public/template/style_time.css')}}">
@@ -62,7 +62,7 @@
     <script src="{{asset('public/template/back/static/js/pages/form-element-select.js') }}"></script>
     <script src="{{asset('public/template/back/extensions/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="{{asset('public/template/back/static/js/pages/sweetalert2.js') }}"></script>
-    <script src="https://cdn.tiny.cloud/1/conh6akldvf0pu23ph6dyjniwgm3w4qyjjnmdpqblain7fhc/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="{{asset('public/template/back/extensions/tinymce/tinymce.min.js') }}"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>

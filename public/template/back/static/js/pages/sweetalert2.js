@@ -4,6 +4,12 @@ const Swal2 = Swal.mixin({
   }
 })
 
+
+const on = (id, handler) => {
+  const el = document.getElementById(id)
+  if (el) el.addEventListener('click', handler)
+}
+
 const Toast = Swal.mixin({
   toast: true,
   position: 'top-end',
@@ -19,10 +25,10 @@ const Toast = Swal.mixin({
 
 
 
-document.getElementById("basic").addEventListener("click", (e) => {
+on("basic", (e) => {
   Swal2.fire("Any fool can use a computer")
 })
-document.getElementById("footer").addEventListener("click", (e) => {
+on("footer", (e) => {
   Swal2.fire({
     icon: "error",
     title: "Oops...",
@@ -30,40 +36,40 @@ document.getElementById("footer").addEventListener("click", (e) => {
     footer: "<a href>Why do I have this issue?</a>",
   })
 })
-document.getElementById("title").addEventListener("click", (e) => {
+on("title", (e) => {
   Swal2.fire("The Internet?", "That thing is still around?", "question")
 })
-document.getElementById("success").addEventListener("click", (e) => {
+on("success", (e) => {
   Swal2.fire({
     icon: "success",
     title: "Success",
   })
 })
-document.getElementById("error").addEventListener("click", (e) => {
+on("error", (e) => {
   Swal2.fire({
     icon: "error",
     title: "Error",
   })
 })
-document.getElementById("warning").addEventListener("click", (e) => {
+on("warning", (e) => {
   Swal2.fire({
     icon: "warning",
     title: "Warning",
   })
 })
-document.getElementById("info").addEventListener("click", (e) => {
+on("info", (e) => {
   Swal2.fire({
     icon: "info",
     title: "Info",
   })
 })
-document.getElementById("question").addEventListener("click", (e) => {
+on("question", (e) => {
   Swal2.fire({
     icon: "question",
     title: "Question",
   })
 })
-document.getElementById("text").addEventListener("click", (e) => {
+on("text", (e) => {
   Swal2.fire({
     title: "Enter your IP address",
     input: "text",
@@ -71,7 +77,7 @@ document.getElementById("text").addEventListener("click", (e) => {
     showCancelButton: true,
   })
 })
-document.getElementById("email").addEventListener("click", async (e) => {
+on("email", async (e) => {
   const { value: email } = await Swal2.fire({
     title: "Input email address",
     input: "email",
@@ -83,7 +89,7 @@ document.getElementById("email").addEventListener("click", async (e) => {
     Swal2.fire(`Entered email: ${email}`)
   }
 })
-document.getElementById("url").addEventListener("click", async (e) => {
+on("url", async (e) => {
   const { value: url } = await Swal2.fire({
     input: "url",
     inputLabel: "URL address",
@@ -94,7 +100,7 @@ document.getElementById("url").addEventListener("click", async (e) => {
     Swal2.fire(`Entered URL: ${url}`)
   }
 })
-document.getElementById("password").addEventListener("click", async (e) => {
+on("password", async (e) => {
   const { value: password } = await Swal2.fire({
     title: "Enter your password",
     input: "password",
@@ -111,7 +117,7 @@ document.getElementById("password").addEventListener("click", async (e) => {
     Swal2.fire(`Entered password: ${password}`)
   }
 })
-document.getElementById("textarea").addEventListener("click", async (e) => {
+on("textarea", async (e) => {
   const { value: text } = await Swal2.fire({
     input: "textarea",
     inputLabel: "Message",
@@ -126,7 +132,7 @@ document.getElementById("textarea").addEventListener("click", async (e) => {
     Swal2.fire(text)
   }
 })
-document.getElementById("select").addEventListener("click", async (e) => {
+on("select", async (e) => {
   const { value: fruit } = await Swal2.fire({
     title: "Select field validation",
     input: "select",
@@ -163,19 +169,19 @@ document.getElementById("select").addEventListener("click", async (e) => {
 })
 
 // Toasts
-document.getElementById('toast-success').addEventListener('click', () => {
+on('toast-success', () => {
   Toast.fire({
     icon: 'success',
     title: 'Signed in successfully'
   })
 })
-document.getElementById('toast-warning').addEventListener('click', () => {
+on('toast-warning', () => {
   Toast.fire({
     icon: 'warning',
     title: 'Please input your email'
   })
 })
-document.getElementById('toast-failed').addEventListener('click', () => {
+on('toast-failed', () => {
   Toast.fire({
     icon: 'error',
     title: 'Transaction error. Please try again later'
